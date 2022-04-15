@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}. My name is Pranay Kumar Pavuluri
+  p Number of rows is #{query.rows}. Number of columns is #{query.cols}.
+
+  - var rows = Number(query.rows)
+  - var cols = Number(query.cols)
+  if !Number.isInteger(rows)
+    p rows is not an integer.
+  if !Number.isInteger(cols)
+    p cols is not an integer.
+  if rows>10 || rows<1
+    p rows value is out of the range. Please choose a value between 1 to 10.
+  else if cols>10 || cols<1
+    p cols value is out of the range. Please choose a value between 1 to 10.
+  else
+    table#outer
+      - for(let i=0; i<rows; i++){
+        tr#middle
+          - for(let j=0; j<cols; j++){
+            td=i+j*j
+          - }
+      - }

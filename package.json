@@ -1,0 +1,30 @@
+{
+  "name": "s2db59pavuluri",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "^4.3.4",
+    "express": "^4.17.3",
+    "http-errors": "^2.0.0",
+    "mongodb": "^4.5.0",
+    "mongoose": "^6.2.10",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
+  },
+  "description": "Created for Assignment 11",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PPAVULURI3579/s2db59pavuluri.git"
+  },
+  "author": "Pranay Kumar Pavuluri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PPAVULURI3579/s2db59pavuluri/issues"
+  },
+  "homepage": "https://github.com/PPAVULURI3579/s2db59pavuluri#readme"
+}
