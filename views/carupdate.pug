@@ -1,6 +1,8 @@
 extends layout
 block content
   h1= title
+  if (toShow == null)
+    h2 No instance to update
 
   - let carid = toShow._id
   - let car_brand = toShow.car_brand
@@ -20,7 +22,7 @@ block content
     div.form-group
       label.carAttr(for='car_cost') Car cost
       input#car_cost(type='number' name='car_cost', value= car_cost )
-    input(type="submit")
+    input(type="submit",class='btn btn-primary')
 
   script.
     document.forms['CarForm'].addEventListener('submit', (event) => {

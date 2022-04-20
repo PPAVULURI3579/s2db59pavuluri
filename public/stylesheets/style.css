@@ -4,10 +4,10 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  color: tomato;
 }
 
 .carAttr {
-   background-color: aqua;
+   background-color: greenyellow;
    width: 130px
 }
