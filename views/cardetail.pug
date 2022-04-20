@@ -1,0 +1,20 @@
+extends layout
+block content
+  h1= title
+  - let carid = toShow._id
+  - let carbrand = toShow.car_brand
+  - let carcost = toShow.car_cost
+  - let carcolor = toShow.car_color
+  div
+    div.row
+      div(class='carAttr mr-3') Car ID is:
+      div #{carid}
+    div.row
+      div(class='carAttr mr-3') Car Brand is:
+      div #{carbrand}
+    div.row
+      div(class='carAttr mr-3') Car Color is:
+      div #{carcolor}
+    div.row
+      div(class='carAttr mr-3') Car Cost is:
+      div #{carcost}
