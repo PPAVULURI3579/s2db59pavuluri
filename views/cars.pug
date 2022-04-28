@@ -2,14 +2,32 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}. My name is Pranay Kumar Pavuluri
-  - let items = results
+  - let cars=results
+  - let destinationcreate = `dispatchCreate(\"/cars/create\")`
   div(class="container-fluid")
-    div(class="row")
-      each cars, index in items
-        div(class="col-sm-2" onclick=`buy(${index+1})`) #{cars.car_brand} - #{cars.car_color} - $#{cars.car_cost}
-  
+    button.btn( class="btn-primary ml-1 btn-lg", onclick= destinationcreate) Create
+  div(class="row m-1")
+   
+    each car,index in cars 
+      - let destinationupdate = `dispatch(\"/cars/update?id=${car._id}\")`
+      -let destinationdetail =   `dispatch(\"/cars/detail?id=${car._id}\")`
+      - let destinationdelete = `dispatchDelete(\"/cars/delete?id=${car._id}\")`
+        div(class="col-sm-4  m-1" style=("font-weight:bolder")) #{car.brand} - #{car.color} - #{car.cost}
+          button.btn( class="btn-success ml-1", onclick= destinationdetail) Detail
+          button.btn( class="btn-info ml-1", onclick= destinationupdate) Update
+          button.btn( class="btn-danger ml-1", onclick= destinationdelete) Delete
   script.
-    function buy(index){
-      alert(`You purchased item ${index}`);
-    }
+      function dispatch(path){
+      window.location.href=path
+      }
+      
+      function ride(rides)
+      {
+        alert(`your booking rides count: ${rides+1}`)
+      }
+      function dispatchCreate(path){
+        window.location.href=path
+      }
+      function dispatchDelete(path){
+        window.location.href=path
+      }

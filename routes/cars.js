@@ -1,16 +1,21 @@
 var express = require('express');
 const car_controller = require('../controllers/car');
 var router = express.Router();
+const secured = (req, res, next) => { 
+  if (req.user){ 
+    return next(); 
+  } 
+  req.session.returnTo = req.originalUrl; 
+  res.redirect("/login"); 
+} 
 
-/* GET home page. */
-/*
-router.get('/', function(req, res, next) {
-  res.render('cars', { title: 'Search Results' });
-});
-*/
+
+
 
 /* GET costumes */
 router.get('/', car_controller.car_view_all_Page );
+// GET request for one car.
+router.get('/car/:id', car_controller.car_detail);
 /* GET detail car page */
 router.get('/detail', car_controller.car_view_one_Page);
 /* GET create car page */

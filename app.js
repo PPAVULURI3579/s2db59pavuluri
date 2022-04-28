@@ -3,20 +3,64 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport'); 
+var LocalStrategy = require('passport-local').Strategy;
+passport.use(new LocalStrategy( 
+  function(username, password, done) { 
+    Account.findOne({ username: username }, function (err, user) { 
+      if (err) { return done(err); } 
+      if (!user) { 
+        return done(null, false, { message: 'Incorrect username.' }); 
+      } 
+      if (!user.validPassword(password)) { 
+        return done(null, false, { message: 'Incorrect password.' }); 
+      } 
+      return done(null, user); 
+    }); 
+  }));
+var mongoose = require('mongoose');
+var Canteen = require("./models/car");
 
-const connectionString = process.env.MONGO_CON;
+const connectionString = process.env.MONGO_CON
 mongoose = require('mongoose');
-mongoose.connect(connectionString,
-  { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
-var Costume = require("./models/costume");
-var Car = require("./models/car");
+var car = require("./models/car");
+var resourceRouter = require('./routes/resource');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var carsRouter = require('./routes/cars');
 var addmodsRouter = require('./routes/addmods');
 var selectorRouter = require('./routes/selector');
-var resourceRouter = require('./routes/resource');
+
+
+let reseed = true;
+if (reseed) { recreateDB(); }
+
+// We can seed the collection if needed on 
+async function recreateDB() {
+  // Delete everything 
+  await car.deleteMany();
+
+  let instance1 = new car({ Car_brand:"chevrolet", Car_color:"cement", Car_cost: 67889 });
+  instance1.save(function (err, doc) {
+    if (err) return console.error(err);
+    console.log("First object saved")
+  });
+  let instance2 = new car({ Car_brand:"hyundai", Car_color:"yellow", Car_cost: 2000 });
+  instance2.save(function (err, doc) {
+    if (err) return console.error(err);
+    console.log("Second object saved")
+  });
+  let instance3 = new car({ Car_brand:"nissan", Car_color:"Red", Car_cost: 3000 });
+  instance3.save(function (err, doc) {
+    if (err) return console.error(err);
+    console.log("Third object saved")
+  });
+}
+
+
 var app = express();
 
 // view engine setup
@@ -27,15 +71,28 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('express-session')({ 
+  secret: 'keyboard cat', 
+  resave: false, 
+  saveUninitialized: false 
+})); 
+app.use(passport.initialize()); 
+app.use(passport.session()); 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/cars', carsRouter);
 app.use('/addmods', addmodsRouter);
-app.use('/selector', selectorRouter)
-app.use('/resource', resourceRouter);
+app.use('/selector', selectorRouter);
+app.use('/', resourceRouter);
 
+
+ 
+var Account =require('./models/account'); 
+passport.use(new LocalStrategy(Account.authenticate())); 
+passport.serializeUser(Account.serializeUser()); 
+passport.deserializeUser(Account.deserializeUser()); 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -54,67 +111,3 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-// We can seed the collection if needed on server start
-async function recreateDB() {
-  // Delete everything
-  await Costume.deleteMany();
-
-  let instance1 = new Costume({ costume_type: "ghostrider", size: 'large', cost: 25.4 });
-  instance1.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("First object saved in Costume")
-  });
-
-  let instance2 = new Costume({ costume_type: "spiderman", size: 'small', cost: 16.5 });
-  instance2.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Second object saved in Costume")
-  });
-
-  let instance3 = new Costume({ costume_type: "batman", size: 'medium', cost: 32.4 });
-  instance3.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Third object saved in Costume")
-  });
-
-  let instance4 = new Costume({ costume_type: "wonderwomen", size: 'extralarge', cost: 43.6 });
-  instance4.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Fourth object saved in Costume")
-  });
-
-// Delete everything in Car
-  await Car.deleteMany();
-
-  let instance5 = new Car({ car_brand: "Nissan Versa", car_color: 'Silver', car_cost: 16205 });
-  instance5.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("First object saved in Car")
-  });
-
-  let instance6 = new Car({ car_brand: "Chevrolet Spark", car_color: 'Nitro Yellow', car_cost: 15207 });
-  instance6.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Second object saved in Car")
-  });
-
-  let instance7 = new Car({ car_brand: "Hyundai Elantra", car_color: 'Grey', car_cost: 21434 });
-  instance7.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Third object saved in Car")
-  });
-
-  let instance8 = new Car({ car_brand: "BMW X3", car_color: 'Tanzanite Blue II Metallic', car_cost: 41950 });
-  instance8.save(function (err, doc) {
-    if (err) return console.error(err);
-    console.log("Fourth object saved in Car")
-  });
-}
-let reseed = true;
-if (reseed) { recreateDB(); }
-
-//Get the default connection
-var db = mongoose.connection;
-//Bind connection to error event
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once("open", function () { console.log("Connection to DB succeeded") });

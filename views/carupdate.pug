@@ -15,13 +15,13 @@ block content
   form(id='CarForm', action= actionid, method="PUT")
     div.form-group
       label.carAttr(for='car_brand') Car brand
-      input#car_brand(type='text' name='car_brand', value= car_brand )
+      input#car_brand(type='text' class='form-control' name='car_brand', value= car_brand )
     div.form-group
       label.carAttr(for='car_color') Car color
-      input#car_color(type='text' name='car_color', value= car_color )
+      input#car_color(type='text'  class='form-control' name='car_color', value= car_color )
     div.form-group
       label.carAttr(for='car_cost') Car cost
-      input#car_cost(type='number' name='car_cost', value= car_cost )
+      input#car_cost(type='number'  class='form-control' name='car_cost', value= car_cost )
     input(type="submit",class='btn btn-primary')
 
   script.
